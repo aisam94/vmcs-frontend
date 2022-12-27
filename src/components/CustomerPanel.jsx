@@ -1,0 +1,83 @@
+function CustomerPanel() {
+  const drinksBrand = [
+    { name: "Koca-kola", price: 10.00, availability: true },
+    { name: "Bepsi", price: 5.00, availability: false },
+    { name: "Manta", price: 15.00, availability: false },
+  ];
+
+  return (
+    <div className="flex flex-col">
+      <h1 className="mt-3 text-center capitalize text-primary">customer panel</h1>
+
+      {/* Input Coin Section */}
+      <div className="grid grid-cols-2 grid-rows-2">
+        <div className="flex m-1 p-1 bg-primary items-center">
+          <span className="m-1 capitalize">insert coin here</span>
+          <div className="io-interface ml-auto"></div>
+        </div>
+        <div className="flex m-1 p-1 bg-secondary items-center justify-center capitalize">
+          coins not valid
+        </div>
+        <div className="flex m-1 p-1 bg-primary items-center capitalize">
+          total money inserted
+        </div>
+        <div className="flex m-1 p-1 bg-secondary items-center justify-center">
+          *RM10.00
+        </div>
+      </div>
+
+      {/* Selection Table */}
+      <table className="my-5 mx-1 p-1 border-collapse border-solid border-white border-1 bg-secondary">
+        <thead className="bg-primary">
+          <tr>
+            <th>Select Drinks Brand Below</th>
+            <th>Price</th>
+            <th>Availability</th>
+            <th>Press To Select</th>
+          </tr>
+        </thead>
+        <tbody>
+          {drinksBrand.map((drink) => (
+            <tr className="">
+              <td className="text-center">{drink.name}</td>
+              <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
+              <td className="text-center">
+                {drink.availability ? "In Stock" : "Not In Stock"}
+              </td>
+              <td className="text-center hover:cursor-pointer hover:bg-secondary-highlight">
+                Press
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+
+      {/* Change notification section */}
+      <div className="panelbar p-2 bg-primary justify-center capitalize">
+        <span>*no change available</span>
+      </div>
+
+      {/* Return cash/ Terminate transaction */}
+      <div className="panelbar p-1 items-center bg-primary justify-between">
+        <div className="">
+          Press here to return cash/change and terminate transaction here
+        </div>
+        <button>Press</button>
+      </div>
+
+      {/* Change dispenser */}
+      <div className="panelbar items-center justify-between bg-primary p-1 capitalize">
+        <div>collect change/ returned cash here</div>
+        <div className='io-interface'></div>
+      </div>
+
+      {/* Drinks dispenser */}
+      <div className="panelbar bg-primary p-1 justify-between capitalize">
+        <div>collect can here</div>
+        <div className="io-interface"></div>
+      </div>
+    </div>
+  );
+}
+
+export default CustomerPanel;
