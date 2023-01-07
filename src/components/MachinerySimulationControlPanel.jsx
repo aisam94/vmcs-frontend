@@ -1,60 +1,69 @@
-function MachinerySimulationControlPanel() {
-  const drinksBrand = [
-    { name: "Koca-kola", price: 10.0, availability: true, numLeft: 10 },
-    { name: "Bepsi", price: 5.0, availability: false, numLeft: 10 },
-    { name: "Manta", price: 15.0, availability: false, numLeft: 10 },
-  ];
+import { useEffect, useState } from "react";
+import axios from "axios";
 
-  const coinStash = [
-    {
-      value: "10c",
-      available: 10,
-    },
-    {
-      value: "20c",
-      available: 10,
-    },
-    {
-      value: "50c",
-      available: 10,
-    },
-    {
-      value: "RM1",
-      available: 10,
-    },
-  ];
+function MachinerySimulationControlPanel() {
+  // this panel will update the database directly
+
+  const [isDoorLocked, setIsDoorLocked] = useState(false);
+  const [drinks, setDrinks] = useState([]);
+  const [coins, setCoins] = useState([]);
+
+  async function fetchDrinks() {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/drinks`);
+    setDrinks(data);
+  }
+
+  async function fetchCoins() {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
+    setCoins(data);
+  }
+
+  useEffect(() => {
+    fetchDrinks();
+    fetchCoins();
+  }, []);
 
   return (
     <div className="flex flex-col space-y-10">
-      <h1 className="mt-3 capitalize text-primary">machinery simulation control panel</h1>
+      <h1 className="mt-3 capitalize text-primary">
+        machinery simulation control panel
+      </h1>
 
-      {/* Drinks availability */}
+      {/* Drinks */}
       <table className="m-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 capitalize bg-primary">display/enter new value</th>
+          <th className="w-56 capitalize bg-primary">
+            display/enter new value
+          </th>
         </thead>
         <tbody>
-          {drinksBrand.map((drink) => (
-            <tr>
-              <td className="text-center bg-primary">Number of drink cans of brand {drink.name}</td>
-              <td className="text-center bg-secondary">{drink.numLeft}</td>
+          {drinks.map((drink) => (
+            <tr key={drink.id}>
+              <td className="text-center bg-primary">
+                Number of drink cans of brand {drink.brand}
+              </td>
+              <td className="text-center bg-secondary">{drink.quantity}</td>
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Coin availability */}
+      {/* Coin */}
       <table className="m-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 capitalize bg-primary">display/enter new value</th>
+          <th className="w-56 capitalize bg-primary">
+            display/enter new value
+          </th>
         </thead>
         <tbody>
-          {coinStash.map((coin) => (
-            <tr>
-              <td className="text-center bg-primary">Number of {coin.value} coins</td>
-              <td className="text-center bg-secondary">{coin.available}</td>
+          {coins.map((coin) => (
+            <tr key={coin.id}>
+              <td className="text-center bg-primary">
+                Number of {coin.denomination} coins
+              </td>
+              <td className="text-center bg-secondary">{coin.quantity}</td>
             </tr>
           ))}
         </tbody>
@@ -65,10 +74,25 @@ function MachinerySimulationControlPanel() {
         <div className="flex truncate items-center capitalize ml-5">
           status of vending machine door lock (change status if required)
         </div>
-        <div className="flex justify-center w-56">
-          <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">Locked</div>
-          <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">Unlocked</div>
-        </div>
+        {isDoorLocked ? (
+          <div className="flex justify-center w-56">
+            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
+              Locked
+            </div>
+            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">
+              Unlocked
+            </div>
+          </div>
+        ) : (
+          <div className="flex justify-center w-56">
+            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">
+              Locked
+            </div>
+            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
+              Unlocked
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

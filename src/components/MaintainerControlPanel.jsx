@@ -1,7 +1,19 @@
+import { useState } from "react";
+
 function MaintainerControlPanel() {
+  // how to handle password
+  // need way to reset denomination
+  // is cash term appropriate????
+
+  const [password, setPassword] = useState("");
+  const [isPasswordValid, setIsPasswordValid] = useState();
+  const [coinDenomination, setCoinDenomination] = useState();
+  const [totalDenomination, setTotalDenomination] = useState(0);
+  const [newDrinkPrice, setNewDrinkPrice] = useState();
+
   return (
     <div className="flex flex-col items-center">
-      <h1 className="mt-5 capitalize text-primary">Maintainer Control Panel</h1>
+      <h1 className="mt-5 capitalize text-primary">maintainer control panel</h1>
 
       {/* Input password */}
       <div className="panelbar">
@@ -37,7 +49,7 @@ function MaintainerControlPanel() {
             total number of coins in selected denomination
           </div>
           <div className="flex bg-secondary w-1/2 justify-center items-center">
-            *RM10.00
+            RM {totalDenomination.toFixed(2)}
           </div>
         </div>
       </div>

@@ -1,13 +1,38 @@
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 function CustomerPanel() {
-  const drinksBrand = [
-    { name: "Koca-kola", price: 10.00, availability: true },
-    { name: "Bepsi", price: 5.00, availability: false },
-    { name: "Manta", price: 15.00, availability: false },
-  ];
+  // how to simulate coin input
+  // how to simulate invalid coin input
+
+  const [totalMoney, setTotalMoney] = useState(0);
+  const [totalChange, setTotalChange] = useState(0);
+  const [isCoinValid, setIsCoinValid] = useState(false);
+  const [isTerminateTransaction, setIsTerminateTransaction] = useState(false);
+
+  const [drinks, setDrinks] = useState([]);
+  const [coins, setCoins] = useState([]);
+
+  async function fetchDrinks() {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/drinks`);
+    setDrinks(data);
+  }
+
+  async function fetchCoins() {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
+    setCoins(data);
+  }
+
+  useEffect(() => {
+    fetchDrinks();
+    fetchCoins();
+  }, []);
 
   return (
     <div className="flex flex-col">
-      <h1 className="mt-3 text-center capitalize text-primary">customer panel</h1>
+      <h1 className="mt-3 text-center capitalize text-primary">
+        customer panel
+      </h1>
 
       {/* Input Coin Section */}
       <div className="grid grid-cols-2 grid-rows-2">
@@ -22,7 +47,7 @@ function CustomerPanel() {
           total money inserted
         </div>
         <div className="flex m-1 p-1 bg-secondary items-center justify-center">
-          *RM10.00
+          RM {totalMoney.toFixed(2)}
         </div>
       </div>
 
@@ -37,12 +62,12 @@ function CustomerPanel() {
           </tr>
         </thead>
         <tbody>
-          {drinksBrand.map((drink) => (
-            <tr className="">
-              <td className="text-center">{drink.name}</td>
+          {drinks.map((drink) => (
+            <tr className="" key={drink.id}>
+              <td className="text-center">{drink.brand}</td>
               <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
               <td className="text-center">
-                {drink.availability ? "In Stock" : "Not In Stock"}
+                {drink.quantity > 0 ? "In Stock" : "Not In Stock"}
               </td>
               <td className="text-center hover:cursor-pointer hover:bg-secondary-highlight">
                 Press
@@ -54,7 +79,11 @@ function CustomerPanel() {
 
       {/* Change notification section */}
       <div className="panelbar p-2 bg-primary justify-center capitalize">
-        <span>*no change available</span>
+        {totalChange === 0 ? (
+          <span>no change available</span>
+        ) : (
+          <span>RM {totalChange.toFixed(2)}</span>
+        )}
       </div>
 
       {/* Return cash/ Terminate transaction */}
@@ -68,7 +97,7 @@ function CustomerPanel() {
       {/* Change dispenser */}
       <div className="panelbar items-center justify-between bg-primary p-1 capitalize">
         <div>collect change/ returned cash here</div>
-        <div className='io-interface'></div>
+        <div className="io-interface"></div>
       </div>
 
       {/* Drinks dispenser */}

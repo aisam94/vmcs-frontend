@@ -55,6 +55,10 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+.button-on{
+  background-color: green;
+  color: #1a1a1a;
+}
 button:hover {
   background-color: #2e2e2e;
 }
