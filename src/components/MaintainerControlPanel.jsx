@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 function MaintainerControlPanel() {
   // how to handle password
@@ -10,6 +11,27 @@ function MaintainerControlPanel() {
   const [coinDenomination, setCoinDenomination] = useState();
   const [totalDenomination, setTotalDenomination] = useState(0);
   const [newDrinkPrice, setNewDrinkPrice] = useState();
+  const [totalCashHeld, setTotalCashHeld] = useState(0);
+
+  async function getTotalCashHeld() {
+    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
+    let totalCashHeld = 0;
+    const coinValue = {
+      "10c": 0.1,
+      "20c": 0.2,
+      "50c": 0.5,
+      RM1: 1,
+    };
+
+    for (let i = 0; i < data.length; i++) {
+      totalCashHeld += coinValue[data[i].denomination] * data[i].quantity;
+    }
+    setTotalCashHeld(totalCashHeld);
+  }
+
+  useEffect(() => {
+    getTotalCashHeld();
+  }, []);
 
   return (
     <div className="flex flex-col items-center">
@@ -68,7 +90,7 @@ function MaintainerControlPanel() {
           press here for total cash held by machine
         </div>
         <div className="bg-secondary w-1/2 flex justify-center items-center p-1">
-          *RM10.00
+          RM {totalCashHeld.toFixed(2)}
         </div>
       </div>
 
