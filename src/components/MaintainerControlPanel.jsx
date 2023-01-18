@@ -71,7 +71,7 @@ function MaintainerControlPanel() {
             total number of coins in selected denomination
           </div>
           <div className="flex bg-secondary w-1/2 justify-center items-center">
-            RM {totalDenomination.toFixed(2)}
+            {totalDenomination}
           </div>
         </div>
       </div>
