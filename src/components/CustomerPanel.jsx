@@ -14,13 +14,13 @@ function CustomerPanel() {
   const [coins, setCoins] = useState([]);
 
   async function fetchDrinks() {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/drinks`);
-    setDrinks(data);
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
+    setDrinks(data?.drinks);
   }
 
   async function fetchCoins() {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
-    setCoins(data);
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/coins`);
+    setCoins(data?.coins);
   }
 
   useEffect(() => {
@@ -56,7 +56,7 @@ function CustomerPanel() {
         <thead className="bg-primary">
           <tr>
             <th>Select Drinks Brand Below</th>
-            <th>Price</th>
+            <th>Price (RM)</th>
             <th>Availability</th>
             <th>Press To Select</th>
           </tr>
@@ -67,7 +67,7 @@ function CustomerPanel() {
               <td className="text-center">{drink.brand}</td>
               <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
               <td className="text-center">
-                {drink.quantity > 0 ? "In Stock" : "Not In Stock"}
+                {drink.count > 0 ? "In Stock" : "Not In Stock"}
               </td>
               <td className="text-center hover:cursor-pointer hover:bg-secondary-highlight">
                 Press

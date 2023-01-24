@@ -9,13 +9,15 @@ function MachinerySimulationControlPanel() {
   const [coins, setCoins] = useState([]);
 
   async function fetchDrinks() {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/drinks`);
-    setDrinks(data);
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
+    console.log(data);
+    setDrinks(data?.drinks);
   }
 
   async function fetchCoins() {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
-    setCoins(data);
+    const { data } = await axios.get(`http://127.0.0.1:8000/api/coins`);
+    console.log(data);
+    setCoins(data?.coins);
   }
 
   useEffect(() => {
@@ -43,7 +45,7 @@ function MachinerySimulationControlPanel() {
               <td className="text-center bg-primary">
                 Number of drink cans of brand {drink.brand}
               </td>
-              <td className="text-center bg-secondary">{drink.quantity}</td>
+              <td className="text-center bg-secondary">{drink.count}</td>
             </tr>
           ))}
         </tbody>
@@ -61,9 +63,9 @@ function MachinerySimulationControlPanel() {
           {coins.map((coin) => (
             <tr key={coin.id}>
               <td className="text-center bg-primary">
-                Number of {coin.denomination} coins
+                Number of {coin.type} coins
               </td>
-              <td className="text-center bg-secondary">{coin.quantity}</td>
+              <td className="text-center bg-secondary">{coin.count}</td>
             </tr>
           ))}
         </tbody>
