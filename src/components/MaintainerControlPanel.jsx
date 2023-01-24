@@ -5,32 +5,62 @@ function MaintainerControlPanel() {
   // how to handle password
   // need way to reset denomination
   // is cash term appropriate????
-
   const [password, setPassword] = useState("");
-  const [isPasswordValid, setIsPasswordValid] = useState();
+  const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [coinDenomination, setCoinDenomination] = useState();
   const [totalDenomination, setTotalDenomination] = useState(0);
   const [newDrinkPrice, setNewDrinkPrice] = useState();
   const [totalCashHeld, setTotalCashHeld] = useState(0);
+  const [coins, setCoins] = useState();
+  const [coinSelected, setCoinSelected] = useState();
 
-  async function getTotalCashHeld() {
-    const { data } = await axios.get(`http://127.0.0.1:8080/api/coins`);
-    let totalCashHeld = 0;
-    const coinValue = {
-      "10c": 0.1,
-      "20c": 0.2,
-      "50c": 0.5,
-      RM1: 1,
-    };
-
-    for (let i = 0; i < data.length; i++) {
-      totalCashHeld += coinValue[data[i].denomination] * data[i].quantity;
-    }
-    setTotalCashHeld(totalCashHeld);
+  async function getCoinData() {
+    const coinData = await axios.get(`http://localhost:8000/api/coins`);
+    setCoins(coinData?.data?.coins);
   }
+
+  function getTotalCashHeld() {
+
+    let totalCashHeld = 0;
+    axios.get(`http://localhost:8000/api/coins`).then((res) => {
+      console.log(res.data.coins);
+      for (let i = 0; i < coins?.length; i++) {
+        // totalCashHeld += coinValue[data[i].denomination] * data[i].quantity;
+        totalCashHeld += coins[i].count * coins[i].value;
+      }
+      setTotalCashHeld(totalCashHeld);
+    });
+  }
+
+  function selectCoin(id) {
+    for (let i = 0; i < coins?.length; i++) {
+      if (id === coins[i]['id']) {
+        setCoinSelected(coins[i]);
+      }
+    }
+  }
+
+  function verifyPassword(password) {
+    if (password.length == 6) {
+      axios.post(`http://localhost:8000/api/verify-password`, {
+        "password": password
+      }).then((res) => {
+        if (res.status === 200) {
+          setIsPasswordValid(true);
+        }
+      }).catch(e => {
+        console.log("invalid password");
+        setIsPasswordValid(false);
+      });
+    }
+  }
+
+  // function updateDrinks(target) {
+  // }
 
   useEffect(() => {
     getTotalCashHeld();
+    getCoinData();
   }, []);
 
   return (
@@ -42,15 +72,15 @@ function MaintainerControlPanel() {
         <span className="p-2 capitalize bg-primary w-1/2 text-center">
           type password here
         </span>
-        <input type="text" className="bg-secondary w-1/2"></input>
+        <input type="text" className="bg-secondary w-1/2" maxLength={6} onKeyUp={(e) => verifyPassword(e.target.value)}></input>
       </div>
 
       {/* Password validity */}
       <div className="flex mx-auto w-full justify-evenly my-1">
-        <span className="py-2 px-6 capitalize bg-secondary text-center">
+        <span className={`py-2 px-6 capitalize text-center ${!isPasswordValid ? 'bg-secondary' :'bg-primary'}`}>
           password valid
         </span>
-        <span className="py-2 px-6 capitalize bg-secondary text-center">
+        <span className={`py-2 px-6 capitalize text-center ${isPasswordValid ? 'bg-secondary' :'bg-primary'}`}>
           password invalid
         </span>
       </div>
@@ -61,17 +91,16 @@ function MaintainerControlPanel() {
           press below to determine number of coins in selected denomination
         </div>
         <div className="flex py-2 w-full text-center bg-secondary justify-evenly mt-1">
-          <button>10c</button>
-          <button>20c</button>
-          <button>50c</button>
-          <button>RM1</button>
+          {coins?.map((value, index) => {
+            return <button key={index} onClick={() => selectCoin(value.id)}>{value.type}</button>
+          })}
         </div>
         <div className="panelbar">
           <div className="capitalize bg-primary w-1/2 p-1 text-center">
             total number of coins in selected denomination
           </div>
           <div className="flex bg-secondary w-1/2 justify-center items-center">
-            {totalDenomination}
+            {coinSelected?.count}
           </div>
         </div>
       </div>
@@ -81,7 +110,7 @@ function MaintainerControlPanel() {
         <div className="capitalize bg-primary p-2 text-center w-1/2">
           type new drinks can price here
         </div>
-        <input className="bg-secondary w-1/2" type="text"></input>
+        <input className="bg-secondary w-1/2" type="text" onKeyUp={(e) => updateDrinks(e.target.value)}></input>
       </div>
 
       {/* Total cash held by machine */}
