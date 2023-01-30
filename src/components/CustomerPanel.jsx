@@ -100,7 +100,7 @@ function CustomerPanel() {
         </thead>
         <tbody>
           {drinks.map((drink) => (
-            <tr className={`${drink.brand === drinkSelected.brand && "button-on"} `} key={drink.id}>
+            <tr className={`${drink.count === 0 && "text-black"} `} key={drink.id}>
               <td className="text-center">{drink.brand}</td>
               <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
               <td className="text-center">
