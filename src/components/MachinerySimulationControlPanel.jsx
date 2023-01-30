@@ -36,7 +36,7 @@ function MachinerySimulationControlPanel() {
         <thead>
           <th className="border-none"></th>
           <th className="w-56 capitalize bg-primary">
-            display/enter new value
+            display value
           </th>
         </thead>
         <tbody>
@@ -56,7 +56,7 @@ function MachinerySimulationControlPanel() {
         <thead>
           <th className="border-none"></th>
           <th className="w-56 capitalize bg-primary">
-            display/enter new value
+            display value
           </th>
         </thead>
         <tbody>
