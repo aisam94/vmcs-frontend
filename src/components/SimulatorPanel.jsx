@@ -26,6 +26,10 @@ function SimulatorPanel() {
     if (!isSimulationStarted) setCurrentPanel(panel);
   }
 
+  function setEmptyPanel(){
+    setCurrentPanel();
+  }
+
   return (
     <div className="m-5">
       <h1 className="text-primary text-center">Simulator Control Panel</h1>
@@ -58,7 +62,7 @@ function SimulatorPanel() {
           <CustomerPanel />
         )}
         {currentPanel === "maintainerPanel" && isSimulationStarted && (
-          <MaintainerControlPanel />
+          <MaintainerControlPanel onClick={setEmptyPanel}/>
         )}
         {currentPanel === "machinerySimulatorPanel" && isSimulationStarted && (
           <MachinerySimulationControlPanel />

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function MaintainerControlPanel() {
+function MaintainerControlPanel({onClick}) {
   // how to handle password
   // need way to reset denomination
   // is cash term appropriate????
@@ -176,7 +176,10 @@ function MaintainerControlPanel() {
             </div>
             <input
               className="bg-secondary w-1/2"
-              type="text"
+              type="number"
+              pattern="^\d+(?:\.\d{1,2})?$"
+              placeholder="0.00"
+              step="0.01"
               onKeyUp={(e) => updateDrinks(e.target.value)}
             ></input>
           </div>
@@ -218,7 +221,7 @@ function MaintainerControlPanel() {
               press here when finished
             </div>
             <div className="w-1/2 flex justify-center items-center">
-              <button className="">Press</button>
+              <button className="" onClick={onClick}>Press</button>
             </div>
           </div>
         </div>
