@@ -12,6 +12,8 @@ function CustomerPanel() {
 
   const [drinks, setDrinks] = useState([]);
   const [coins, setCoins] = useState([]);
+  const [coinSelected, setCoinSelected] = useState();
+  const [drinkSelected, setDrinkSelected] = useState("");
 
   async function fetchDrinks() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
@@ -21,6 +23,27 @@ function CustomerPanel() {
   async function fetchCoins() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/coins`);
     setCoins(data?.coins);
+  }
+
+  function selectCoin(id) {
+    if (id === undefined) {
+      setCoinSelected();
+      return;
+    }
+    for (let i = 0; i < coins?.length; i++) {
+      if (id === coins[i]["id"]) {
+        setCoinSelected(coins[i]);
+      }
+    }
+  }
+
+  function selectDrink(id) {
+    for (let i = 0; i < drinks?.length; i++) {
+      if (id === drinks[i]["id"]) {
+        setDrinkSelected(drinks[i]);
+        console.log(drinkSelected);
+      }
+    }
   }
 
   useEffect(() => {
@@ -35,6 +58,20 @@ function CustomerPanel() {
       </h1>
 
       {/* Input Coin Section */}
+
+      <div className="flex py-2 w-full text-center bg-secondary justify-evenly mt-1">
+        <button key={0} onClick={() => selectCoin()}>
+          Invalid coin
+        </button>
+
+        {coins?.map((value, index) => {
+          return (
+            <button key={index + 1} onClick={() => selectCoin(value.id)}>
+              {value.type}
+            </button>
+          );
+        })}
+      </div>
       <div className="grid grid-cols-2 grid-rows-2">
         <div className="flex m-1 p-1 bg-primary items-center">
           <span className="m-1 capitalize">insert coin here</span>
@@ -63,13 +100,16 @@ function CustomerPanel() {
         </thead>
         <tbody>
           {drinks.map((drink) => (
-            <tr className="" key={drink.id}>
+            <tr className={`${drink.brand === drinkSelected.brand && "button-on"} `} key={drink.id}>
               <td className="text-center">{drink.brand}</td>
               <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
               <td className="text-center">
                 {drink.count > 0 ? "In Stock" : "Not In Stock"}
               </td>
-              <td className="text-center hover:cursor-pointer hover:bg-secondary-highlight">
+              <td
+                className="text-center hover:cursor-pointer hover:bg-secondary-highlight"
+                onClick={() => selectDrink(drink.id)}
+              >
                 Press
               </td>
             </tr>
