@@ -32,7 +32,7 @@ function MachinerySimulationControlPanel() {
       </h1>
 
       {/* Drinks */}
-      <table className="m-1 p-1 w-full">
+      <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
           <th className="w-56 capitalize bg-primary">
@@ -52,7 +52,7 @@ function MachinerySimulationControlPanel() {
       </table>
 
       {/* Coin */}
-      <table className="m-1 p-1 w-full">
+      <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
           <th className="w-56 capitalize bg-primary">

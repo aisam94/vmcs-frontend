@@ -72,24 +72,24 @@ function CustomerPanel() {
           );
         })}
       </div>
-      <div className="grid grid-cols-2 grid-rows-2">
-        <div className="flex m-1 p-1 bg-primary items-center">
-          <span className="m-1 capitalize">insert coin here</span>
-          <div className="io-interface ml-auto"></div>
+      <div className="grid my-2 grid-cols-2 grid-rows-2">
+        <div className="flex p-1 bg-primary items-center">
+          <span className="capitalize">insert coin here</span>
+          <div className="io-interface ml-auto mr-5"></div>
         </div>
-        <div className="flex m-1 p-1 bg-secondary items-center justify-center capitalize">
+        <div className="flex p-1 bg-secondary items-center justify-center capitalize">
           coins not valid
         </div>
-        <div className="flex m-1 p-1 bg-primary items-center capitalize">
+        <div className="flex my-1 px-1 py-2 bg-primary items-center capitalize">
           total money inserted
         </div>
-        <div className="flex m-1 p-1 bg-secondary items-center justify-center">
+        <div className="flex my-1 p-1 bg-secondary items-center justify-center">
           RM {totalMoney.toFixed(2)}
         </div>
       </div>
 
       {/* Selection Table */}
-      <table className="my-5 mx-1 p-1 border-collapse border-solid border-white border-1 bg-secondary">
+      <table className="my-5 p-1 border-collapse border-solid border-white border-1 bg-secondary">
         <thead className="bg-primary">
           <tr>
             <th>Select Drinks Brand Below</th>
@@ -137,13 +137,13 @@ function CustomerPanel() {
       {/* Change dispenser */}
       <div className="panelbar items-center justify-between bg-primary p-1 capitalize">
         <div>collect change/ returned cash here</div>
-        <div className="io-interface"></div>
+        <div className="io-interface ml-auto mr-5"></div>
       </div>
 
       {/* Drinks dispenser */}
       <div className="panelbar bg-primary p-1 justify-between capitalize">
         <div>collect can here</div>
-        <div className="io-interface"></div>
+        <div className="io-interface ml-auto mr-5"></div>
       </div>
     </div>
   );

@@ -31,7 +31,7 @@ function SimulatorPanel() {
   }
 
   return (
-    <div className="m-5">
+    <div className="m-5 flex flex-col items-center">
       <h1 className="text-primary text-center">Simulator Control Panel</h1>
       <PanelActionBar
         string="begin simulation"
