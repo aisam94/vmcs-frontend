@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-function MaintainerControlPanel({onClick}) {
+function MaintainerControlPanel({ onClick }) {
   // how to handle password
   // need way to reset denomination
   // is cash term appropriate????
@@ -23,7 +23,6 @@ function MaintainerControlPanel({onClick}) {
 
   async function fetchDrinks() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
-    console.log(data);
     setDrinks(data?.drinks);
   }
 
@@ -73,8 +72,21 @@ function MaintainerControlPanel({onClick}) {
     }
   }
 
-  function updateDrinks(drinkId, newPrice) {
-
+  function updateDrinks(e) {
+    if (e.key === "Enter") {
+      axios
+        .put(`http://localhost:8000/api/drinks/update/${drinkSelected.id}`, {
+          price: e.target.value,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("successful updating drinks price");
+          }
+        })
+        .catch((e) => {
+          console.log("fail updating drinks price");
+        });
+    }
   }
 
   useEffect(() => {
@@ -178,9 +190,8 @@ function MaintainerControlPanel({onClick}) {
               className="bg-secondary w-1/2"
               type="number"
               pattern="^\d+(?:\.\d{1,2})?$"
-              placeholder="0.00"
               step="0.01"
-              onKeyUp={(e) => updateDrinks(e.target.value)}
+              onKeyDown={updateDrinks}
             ></input>
           </div>
 
@@ -221,7 +232,9 @@ function MaintainerControlPanel({onClick}) {
               press here when finished
             </div>
             <div className="w-1/2 flex justify-center items-center">
-              <button className="" onClick={onClick}>Press</button>
+              <button className="" onClick={onClick}>
+                Press
+              </button>
             </div>
           </div>
         </div>
