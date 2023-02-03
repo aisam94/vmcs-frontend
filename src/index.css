@@ -59,6 +59,10 @@ button {
   background-color: green;
   color: #1a1a1a;
 }
+.button-error{
+  background-color: red;
+  color: #1a1a1a;
+}
 button:hover {
   background-color: #2e2e2e;
 }

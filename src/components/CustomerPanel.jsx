@@ -26,13 +26,16 @@ function CustomerPanel() {
   }
 
   function selectCoin(id) {
-    if (id === undefined) {
-      setCoinSelected();
+    if (id === "invalid") {
+      setCoinSelected("invalid");
+      setTotalMoney(0);
       return;
     }
     for (let i = 0; i < coins?.length; i++) {
       if (id === coins[i]["id"]) {
         setCoinSelected(coins[i]);
+        let newTotal = +(totalMoney + coins[i].value).toFixed(2);
+        setTotalMoney(newTotal);
       }
     }
   }
@@ -60,7 +63,7 @@ function CustomerPanel() {
       {/* Input Coin Section */}
 
       <div className="flex py-2 w-full text-center bg-secondary justify-evenly mt-1">
-        <button key={0} onClick={() => selectCoin()}>
+        <button key={0} onClick={() => selectCoin("invalid")}>
           Invalid coin
         </button>
 
@@ -77,9 +80,15 @@ function CustomerPanel() {
           <span className="capitalize">insert coin here</span>
           <div className="io-interface ml-auto mr-5"></div>
         </div>
-        <div className="flex p-1 bg-secondary items-center justify-center capitalize">
-          coins not valid
-        </div>
+        {coinSelected === "invalid" ? (
+          <div className="flex p-1 bg-secondary items-center justify-center capitalize button-error">
+            coins not valid
+          </div>
+        ) : (
+          <div className="flex p-1 bg-secondary items-center justify-center capitalize text-black">
+            coins not valid
+          </div>
+        )}
         <div className="flex my-1 px-1 py-2 bg-primary items-center capitalize">
           total money inserted
         </div>
@@ -100,7 +109,10 @@ function CustomerPanel() {
         </thead>
         <tbody>
           {drinks.map((drink) => (
-            <tr className={`${drink.count === 0 && "text-black"} `} key={drink.id}>
+            <tr
+              className={`${drink.count === 0 && "text-black"} `}
+              key={drink.id}
+            >
               <td className="text-center">{drink.brand}</td>
               <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
               <td className="text-center">
