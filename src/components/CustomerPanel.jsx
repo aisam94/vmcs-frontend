@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 
 function CustomerPanel() {
-  // how to simulate coin input
-  // how to simulate invalid coin input
-
   const [totalMoney, setTotalMoney] = useState(0);
+  const [coinsArray, setCoinsArray] = useState([]);
   const [totalChange, setTotalChange] = useState(0);
   const [isCoinValid, setIsCoinValid] = useState(false);
   const [isTerminateTransaction, setIsTerminateTransaction] = useState(false);
@@ -13,7 +11,7 @@ function CustomerPanel() {
   const [drinks, setDrinks] = useState([]);
   const [coins, setCoins] = useState([]);
   const [coinSelected, setCoinSelected] = useState();
-  const [drinkSelected, setDrinkSelected] = useState("");
+  const [drinkSelected, setDrinkSelected] = useState();
 
   async function fetchDrinks() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
@@ -29,6 +27,7 @@ function CustomerPanel() {
     if (id === "invalid") {
       setCoinSelected("invalid");
       setTotalMoney(0);
+      setCoinsArray([]);
       return;
     }
     for (let i = 0; i < coins?.length; i++) {
@@ -36,6 +35,8 @@ function CustomerPanel() {
         setCoinSelected(coins[i]);
         let newTotal = +(totalMoney + coins[i].value).toFixed(2);
         setTotalMoney(newTotal);
+        setCoinsArray([...coinsArray, coins[i].id]);
+        console.log(coinsArray);
       }
     }
   }
@@ -44,9 +45,63 @@ function CustomerPanel() {
     for (let i = 0; i < drinks?.length; i++) {
       if (id === drinks[i]["id"]) {
         setDrinkSelected(drinks[i]);
-        console.log(drinkSelected);
       }
     }
+  }
+
+  function getChange(price) {
+    return +(totalMoney - price).toFixed(2);
+  }
+
+  function buyDrink(drink) {
+    //select drink
+    selectDrink(drink.id);
+
+    // dispense drink
+    axios
+      .post(`http://localhost:8000/api/drinks/purchase`, {
+        coins: coinsArray,
+        drinks_id: drink.id,
+      })
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("successful dispensing drink");
+        }
+      })
+      .catch((e) => {
+        console.log("fail dispensing drink");
+      });
+
+    // calculate change
+    let change = getChange(drink.price);
+    setTotalChange(change);
+
+    //reset total money
+    setTotalMoney(0);
+    setCoinsArray([]);
+    // how about drink and coin list
+  }
+
+  function terminateTransaction() {
+    //reset everything
+    setTotalMoney(0);
+    setCoinsArray([]);
+    setTotalChange(0);
+    setCoinSelected();
+    setDrinkSelected();
+  }
+
+  function giveOutChange() {
+    // if drink is not selected then terminate transaction
+    console.log(drinkSelected);
+    if (!drinkSelected) {
+      terminateTransaction();
+      console.log("terminate transaction");
+      return;
+    }
+    console.log("give out change");
+    setTotalChange(0);
+    setDrinkSelected();
   }
 
   useEffect(() => {
@@ -108,33 +163,45 @@ function CustomerPanel() {
           </tr>
         </thead>
         <tbody>
-          {drinks.map((drink) => (
-            <tr
-              className={`${drink.count === 0 && "text-black"} `}
-              key={drink.id}
-            >
-              <td className="text-center">{drink.brand}</td>
-              <td className="text-right px-2 py-1">{drink.price.toFixed(2)}</td>
-              <td className="text-center">
-                {drink.count > 0 ? "In Stock" : "Not In Stock"}
-              </td>
-              <td
-                className="text-center hover:cursor-pointer hover:bg-secondary-highlight"
-                onClick={() => selectDrink(drink.id)}
-              >
-                Press
-              </td>
-            </tr>
-          ))}
+          {drinks.map((drink) =>
+            drink.count === 0 || totalMoney < drink.price ? (
+              <tr className="text-black" key={drink.id}>
+                <td className="text-center">{drink.brand}</td>
+                <td className="text-right px-2 py-1">
+                  {drink.price.toFixed(2)}
+                </td>
+                <td className="text-center">
+                  {drink.count > 0 ? "In Stock" : "Not In Stock"}
+                </td>
+                <td className="text-center">Press</td>
+              </tr>
+            ) : (
+              <tr className="" key={drink.id}>
+                <td className="text-center">{drink.brand}</td>
+                <td className="text-right px-2 py-1">
+                  {drink.price.toFixed(2)}
+                </td>
+                <td className="text-center">
+                  {drink.count > 0 ? "In Stock" : "Not In Stock"}
+                </td>
+                <td
+                  className="text-center hover:cursor-pointer hover:bg-secondary-highlight"
+                  onClick={() => buyDrink(drink)}
+                >
+                  Press
+                </td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
 
       {/* Change notification section */}
       <div className="panelbar p-2 bg-primary justify-center capitalize">
         {totalChange === 0 ? (
-          <span>no change available</span>
+          <div>no change available</div>
         ) : (
-          <span>RM {totalChange.toFixed(2)}</span>
+          <div>RM {totalChange.toFixed(2)}</div>
         )}
       </div>
 
@@ -143,7 +210,7 @@ function CustomerPanel() {
         <div className="">
           Press here to return cash/change and terminate transaction here
         </div>
-        <button>Press</button>
+        <button onClick={() => giveOutChange()}>Press</button>
       </div>
 
       {/* Change dispenser */}
