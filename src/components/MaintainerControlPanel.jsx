@@ -9,7 +9,7 @@ function MaintainerControlPanel({ onClick }) {
   const [isPasswordValid, setIsPasswordValid] = useState(false);
   const [coinDenomination, setCoinDenomination] = useState();
   const [totalDenomination, setTotalDenomination] = useState(0);
-  const [newDrinkPrice, setNewDrinkPrice] = useState();
+  const [newDrinkPrice, setNewDrinkPrice] = useState(0);
   const [totalCashHeld, setTotalCashHeld] = useState(0);
   const [drinks, setDrinks] = useState([]);
   const [coins, setCoins] = useState();
@@ -27,13 +27,8 @@ function MaintainerControlPanel({ onClick }) {
   }
 
   async function getTotalCashHeld() {
-    let totalCash = 0;
-    const { data } = await axios.get(`http://localhost:8000/api/coins`);
-    let coins = data.coins;
-    for (let i = 0; i < coins?.length; i++) {
-      totalCash += coins[i].count * coins[i].value;
-    }
-    setTotalCashHeld(totalCash);
+    const { data } = await axios.get(`http://localhost:8000/api/coins/total-cash`);
+    setTotalCashHeld(data.total_amount);
   }
 
   function selectCoin(id) {
@@ -86,7 +81,24 @@ function MaintainerControlPanel({ onClick }) {
         .catch((e) => {
           console.log("fail updating drinks price");
         });
+      setDrinkSelected("");
+      setNewDrinkPrice(0);
+      // zero drink price
     }
+  }
+
+  function withdrawMoney() {
+    // withdraw money
+    axios
+      .post(`http://localhost:8000/api/coins/withdraw/`)
+      .then((res) => {
+        if (res.status === 200) {
+          console.log("successful withdrawing money");
+        }
+      })
+      .catch((e) => {
+        console.log("fail withdrawing money");
+      });
   }
 
   useEffect(() => {
@@ -191,6 +203,8 @@ function MaintainerControlPanel({ onClick }) {
               type="number"
               pattern="^\d+(?:\.\d{1,2})?$"
               step="0.01"
+              value={newDrinkPrice}
+              onChange={(e) => setNewDrinkPrice(e.value)}
               onKeyDown={updateDrinks}
             ></input>
           </div>
@@ -212,7 +226,9 @@ function MaintainerControlPanel({ onClick }) {
               press here to collect all cash
             </div>
             <div className="w-1/2 flex justify-center items-center">
-              <button className="">Press</button>
+              <button className="" onClick={() => withdrawMoney()}>
+                Press
+              </button>
             </div>
           </div>
 
