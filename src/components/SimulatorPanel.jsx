@@ -26,7 +26,7 @@ function SimulatorPanel() {
     if (!isSimulationStarted) setCurrentPanel(panel);
   }
 
-  function setEmptyPanel(){
+  function setEmptyPanel() {
     setCurrentPanel();
   }
 
@@ -40,21 +40,26 @@ function SimulatorPanel() {
       />
       <PanelActionBar string="end simulation" onClick={endSimulation} />
 
-      <PanelActionBar
-        string="activate customer panel"
-        onClick={() => setPanel("customerPanel")}
-        onStatus={currentPanel === "customerPanel"}
-      />
-      <PanelActionBar
-        string="activate maintainer panel"
-        onClick={() => setPanel("maintainerPanel")}
-        onStatus={currentPanel === "maintainerPanel"}
-      />
-      <PanelActionBar
-        string="activate machinery simulator panel"
-        onClick={() => setPanel("machinerySimulatorPanel")}
-        onStatus={currentPanel === "machinerySimulatorPanel"}
-      />
+      {!isSimulationStarted && (
+        <>
+          <PanelActionBar
+            string="activate customer panel"
+            onClick={() => setPanel("customerPanel")}
+            onStatus={currentPanel === "customerPanel"}
+          />
+
+          <PanelActionBar
+            string="activate maintainer panel"
+            onClick={() => setPanel("maintainerPanel")}
+            onStatus={currentPanel === "maintainerPanel"}
+          />
+          <PanelActionBar
+            string="activate machinery simulator panel"
+            onClick={() => setPanel("machinerySimulatorPanel")}
+            onStatus={currentPanel === "machinerySimulatorPanel"}
+          />
+        </>
+      )}
 
       {/* Panel */}
       <div>
@@ -62,7 +67,7 @@ function SimulatorPanel() {
           <CustomerPanel />
         )}
         {currentPanel === "maintainerPanel" && isSimulationStarted && (
-          <MaintainerControlPanel onClick={setEmptyPanel}/>
+          <MaintainerControlPanel onClick={setEmptyPanel} />
         )}
         {currentPanel === "machinerySimulatorPanel" && isSimulationStarted && (
           <MachinerySimulationControlPanel />
