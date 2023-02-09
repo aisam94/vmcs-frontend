@@ -26,8 +26,8 @@ function CustomerPanel() {
   function selectCoin(id) {
     if (id === "invalid") {
       setCoinSelected("invalid");
-      setTotalMoney(0);
-      setCoinsArray([]);
+      // setTotalMoney(0);
+      // setCoinsArray([]);
       return;
     }
     for (let i = 0; i < coins?.length; i++) {
