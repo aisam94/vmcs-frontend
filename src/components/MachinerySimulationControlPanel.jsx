@@ -6,18 +6,79 @@ function MachinerySimulationControlPanel() {
 
   const [isDoorLocked, setIsDoorLocked] = useState(false);
   const [drinks, setDrinks] = useState([]);
+  const [newDrinks, setNewDrinks] = useState([]);
   const [coins, setCoins] = useState([]);
+  const [newCoins, setNewCoins] = useState([]);
+
+  const drinkLimit = 20;
+  const coinLimit = 20;
 
   async function fetchDrinks() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/drinks`);
-    console.log(data);
     setDrinks(data?.drinks);
+    setNewDrinks(data?.drinks);
   }
 
   async function fetchCoins() {
     const { data } = await axios.get(`http://127.0.0.1:8000/api/coins`);
-    console.log(data);
     setCoins(data?.coins);
+    setNewCoins(data?.coins);
+  }
+
+  function updateNewDrink(id, newValue) {
+    if (newValue > drinkLimit || newValue < 0) return;
+    let newData = newDrinks.map((e) => {
+      if (e.id === id) {
+        return { ...e, count: newValue };
+      }
+      return e;
+    });
+    setNewDrinks(newData);
+  }
+
+  function updateNewCoins(id, newValue) {
+    if (newValue > coinLimit || newValue < 0) return;
+    let newData = newCoins.map((e) => {
+      if (e.id === id) {
+        return { ...e, count: newValue };
+      }
+      return e;
+    });
+    setNewCoins(newData);
+  }
+
+  function updateDrink(e, id) {
+    if (e.key === "Enter") {
+      axios
+        .put(`http://localhost:8000/api/drinks/update/${id}`, {
+          count: e.target.value,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("successful updating drinks");
+          }
+        })
+        .catch((e) => {
+          console.log("fail updating drinks");
+        });
+    }
+  }
+
+  function updateCoin(e, id) {
+    if (e.key === "Enter") {
+      axios
+        .put(`http://localhost:8000/api/coins/update/${id}`, {
+          count: e.target.value,
+        })
+        .then((res) => {
+          if (res.status === 200) {
+            console.log("successful updating coins");
+          }
+        })
+        .catch((e) => {
+          console.log("fail updating coins");
+        });
+    }
   }
 
   useEffect(() => {
@@ -35,17 +96,25 @@ function MachinerySimulationControlPanel() {
       <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 capitalize bg-primary">
-            display value
-          </th>
+          <th className="w-56 bg-primary">Display/Update Values</th>
         </thead>
         <tbody>
-          {drinks.map((drink) => (
+          {newDrinks.map((drink) => (
             <tr key={drink.id}>
               <td className="text-center bg-primary">
                 Number of drink cans of brand {drink.brand}
               </td>
-              <td className="text-center bg-secondary">{drink.count}</td>
+              <td>
+                <input
+                  className="text-center bg-secondary"
+                  type="number"
+                  value={drink.count}
+                  onChange={(e) => {
+                    updateNewDrink(drink.id, e.target.value);
+                  }}
+                  onKeyDown={(e) => updateDrink(e, drink.id)}
+                ></input>
+              </td>
             </tr>
           ))}
         </tbody>
@@ -55,17 +124,25 @@ function MachinerySimulationControlPanel() {
       <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 capitalize bg-primary">
-            display value
-          </th>
+          <th className="w-56 bg-primary">Display/Update Values</th>
         </thead>
         <tbody>
-          {coins.map((coin) => (
+          {newCoins.map((coin) => (
             <tr key={coin.id}>
               <td className="text-center bg-primary">
                 Number of {coin.type} coins
               </td>
-              <td className="text-center bg-secondary">{coin.count}</td>
+              <td>
+                <input
+                  className="text-center bg-secondary"
+                  type="number"
+                  value={coin.count}
+                  onChange={(e) => {
+                    updateNewCoins(coin.id, e.target.value);
+                  }}
+                  onKeyDown={(e) => updateCoin(e, coin.id)}
+                ></input>
+              </td>
             </tr>
           ))}
         </tbody>

@@ -27,7 +27,9 @@ function MaintainerControlPanel({ onClick }) {
   }
 
   async function getTotalCashHeld() {
-    const { data } = await axios.get(`http://localhost:8000/api/coins/total-cash`);
+    const { data } = await axios.get(
+      `http://localhost:8000/api/coins/total-cash`
+    );
     setTotalCashHeld(data.total_amount);
   }
 
@@ -68,6 +70,7 @@ function MaintainerControlPanel({ onClick }) {
   }
 
   function updateDrinks(e) {
+    e.preventDefault();
     if (e.key === "Enter") {
       axios
         .put(`http://localhost:8000/api/drinks/update/${drinkSelected.id}`, {
@@ -83,7 +86,6 @@ function MaintainerControlPanel({ onClick }) {
         });
       setDrinkSelected("");
       setNewDrinkPrice(0);
-      // zero drink price
     }
   }
 
@@ -99,13 +101,14 @@ function MaintainerControlPanel({ onClick }) {
       .catch((e) => {
         console.log("fail withdrawing money");
       });
+    getTotalCashHeld();
   }
 
   useEffect(() => {
     getCoinData();
     getTotalCashHeld();
     fetchDrinks();
-  }, []);
+  }, [totalCashHeld]);
 
   return (
     <div className="flex flex-col items-center">
@@ -201,8 +204,7 @@ function MaintainerControlPanel({ onClick }) {
             <input
               className="bg-secondary w-1/2"
               type="number"
-              pattern="^\d+(?:\.\d{1,2})?$"
-              step="0.01"
+              step="0.1"
               value={newDrinkPrice}
               onChange={(e) => setNewDrinkPrice(e.value)}
               onKeyDown={updateDrinks}
