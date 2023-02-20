@@ -206,7 +206,11 @@ function MaintainerControlPanel({ onClick }) {
               type="number"
               step="0.1"
               value={newDrinkPrice}
-              onChange={(e) => setNewDrinkPrice(e.value)}
+              onChange={(e) => {
+                if (e.target.value >= 0) {
+                  setNewDrinkPrice(e.target.value);
+                }
+              }}
               onKeyDown={updateDrinks}
             ></input>
           </div>
