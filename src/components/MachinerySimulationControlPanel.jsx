@@ -26,6 +26,7 @@ function MachinerySimulationControlPanel() {
   }
 
   function updateNewDrink(id, newValue) {
+    if (isDoorLocked) return;
     if (newValue > drinkLimit || newValue < 0) return;
     let newData = newDrinks.map((e) => {
       if (e.id === id) {
@@ -37,6 +38,7 @@ function MachinerySimulationControlPanel() {
   }
 
   function updateNewCoins(id, newValue) {
+    if (isDoorLocked) return;
     if (newValue > coinLimit || newValue < 0) return;
     let newData = newCoins.map((e) => {
       if (e.id === id) {
@@ -48,6 +50,7 @@ function MachinerySimulationControlPanel() {
   }
 
   function updateDrink(e, id) {
+    if (isDoorLocked) return;
     if (e.key === "Enter") {
       axios
         .put(`http://localhost:8000/api/drinks/update/${id}`, {
@@ -65,6 +68,7 @@ function MachinerySimulationControlPanel() {
   }
 
   function updateCoin(e, id) {
+    if (isDoorLocked) return;
     if (e.key === "Enter") {
       axios
         .put(`http://localhost:8000/api/coins/update/${id}`, {
@@ -96,7 +100,7 @@ function MachinerySimulationControlPanel() {
       <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 bg-primary">Display/Update Values</th>
+          <th className="w-56 bg-primary">Display/Enter New Value</th>
         </thead>
         <tbody>
           {newDrinks.map((drink) => (
@@ -109,9 +113,7 @@ function MachinerySimulationControlPanel() {
                   className="text-center bg-secondary"
                   type="number"
                   value={drink.count}
-                  onChange={(e) => {
-                    updateNewDrink(drink.id, e.target.value);
-                  }}
+                  onChange={(e) => updateNewDrink(drink.id, e.target.value)}
                   onKeyDown={(e) => updateDrink(e, drink.id)}
                 ></input>
               </td>
@@ -124,7 +126,7 @@ function MachinerySimulationControlPanel() {
       <table className="my-1 p-1 w-full">
         <thead>
           <th className="border-none"></th>
-          <th className="w-56 bg-primary">Display/Update Values</th>
+          <th className="w-56 bg-primary">Display/Enter New Value</th>
         </thead>
         <tbody>
           {newCoins.map((coin) => (
@@ -137,9 +139,7 @@ function MachinerySimulationControlPanel() {
                   className="text-center bg-secondary"
                   type="number"
                   value={coin.count}
-                  onChange={(e) => {
-                    updateNewCoins(coin.id, e.target.value);
-                  }}
+                  onChange={(e) => updateNewCoins(coin.id, e.target.value)}
                   onKeyDown={(e) => updateCoin(e, coin.id)}
                 ></input>
               </td>
@@ -155,21 +155,24 @@ function MachinerySimulationControlPanel() {
         </div>
         {isDoorLocked ? (
           <div className="flex justify-center w-56">
-            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
+            <button className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
               Locked
-            </div>
-            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">
+            </button>
+            <button className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">
               Unlocked
-            </div>
+            </button>
           </div>
         ) : (
           <div className="flex justify-center w-56">
-            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center">
+            <button
+              className="m-2 p-2 border border-black bg-secondary w-1/2 text-center"
+              onClick={() => setIsDoorLocked(true)}
+            >
               Locked
-            </div>
-            <div className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
+            </button>
+            <button className="m-2 p-2 border border-black bg-secondary w-1/2 text-center button-on">
               Unlocked
-            </div>
+            </button>
           </div>
         )}
       </div>
